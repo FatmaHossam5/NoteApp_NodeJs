@@ -4,6 +4,7 @@ import authRouter from './auth/auth.router.js';
 import  express  from 'express';
 import cors from 'cors'
 import connectDB from '../DB/connection.js'
+import { globalErrorHandling } from '../services/errorHandling.js';
 
 
 
@@ -17,5 +18,6 @@ app.use(`${baseUrl}/note`,noteRouter)
 app.use("*",(req,res)=>{
     res.json({message:"In-valid Routing"})
 })
+globalErrorHandling()
 connectDB()
 }

@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from 'dotenv';
 import {appRouter} from "./modules/index.router.js"
 dotenv.config()
-
+const port = process.env.PORT 
 const app = express()
 appRouter(app)
 

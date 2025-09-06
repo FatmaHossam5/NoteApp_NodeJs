@@ -1,65 +1,105 @@
 import noteModel from "../../../DB/model/note.js"
 import { asyncHandler } from "../../../services/errorHandling.js"
 
-export const addBlog = asyncHandler(async (req, res,next) => {
+/**
+ * Create a new note
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+export const addNote = asyncHandler(async (req, res, next) => {
+    const { title, desc } = req.body;
+    const newNote = new noteModel({ title, desc, userID: req.user._id });
+    const savedNote = await newNote.save();
     
-        const { title, desc } = req.body
-        const newNote = new noteModel({ title, desc, userID: req.user._id })
-        const savedNote = await newNote.save()
-        res.json({ message: "Done", savedNote })
-    } )
+    res.status(201).json({ 
+        message: "Note created successfully", 
+        note: savedNote 
+    });
+});
    
  
 
-    export const userNotes = asyncHandler(
-        async (req, res,next) => {
-        
-            const NoteList = await noteModel.find({ userID: req.user._id })
-            res.json({ message: "Blog Module", NoteList })
-         
-     
-    }
-    )
+/**
+ * Get all notes for the authenticated user
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+export const userNotes = asyncHandler(async (req, res, next) => {
+    const noteList = await noteModel.find({ userID: req.user._id });
+    res.json({ 
+        message: "Notes retrieved successfully", 
+        notes: noteList,
+        count: noteList.length
+    });
+});
 
-    export const getNoteByID = asyncHandler(async (req, res,next) => {
-        
-        const { id } = req.params
-        const Note = await noteModel.findById(id).populate([
-            {
-                path: "userID",
-                select: 'email name'
-            }
-        ]) 
-        Note ? res.json({ message: "Done", Note }) : res.json({ message: "In-valid ID" })
-   
-}) 
+/**
+ * Get a specific note by ID
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+export const getNoteByID = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const note = await noteModel.findById(id).populate([
+        {
+            path: "userID",
+            select: 'email name'
+        }
+    ]);
     
-     
-export const updateNote = asyncHandler(async (req, res,next) => {
-  
+    if (!note) {
+        return res.status(404).json({ message: "Note not found" });
+    }
+    
+    res.json({ message: "Note retrieved successfully", note });
+});
+
+/**
+ * Update a note
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+export const updateNote = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const { title, desc } = req.body;
 
-    const note = await noteModel.findOneAndUpdate({ _id: id, userID: req.user._id },
-        { title, desc }, { new: true })
- 
-    note ? res.json({ message: "Done", note }) :
-        res.json({ message: "In-valid iD or u are not auth" })
+    const note = await noteModel.findOneAndUpdate(
+        { _id: id, userID: req.user._id },
+        { title, desc }, 
+        { new: true }
+    );
 
-}) 
+    if (!note) {
+        return res.status(404).json({ 
+            message: "Note not found or you are not authorized to update this note" 
+        });
+    }
 
-export const deleteNote =asyncHandler(
-    async (req, res,next) => {
-   
-        const { id } = req.params;
+    res.json({ message: "Note updated successfully", note });
+});
 
-        const note = await noteModel.deleteOne({ _id: id, userID: req.user._id })
+/**
+ * Delete a note
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+export const deleteNote = asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
 
-        note.deletedCount ? res.json({ message: "Done", note }) :
-            res.json({ message: "In-valid iD or u are not auth" })
-    
+    const result = await noteModel.deleteOne({ _id: id, userID: req.user._id });
 
-}  
-) 
+    if (result.deletedCount === 0) {
+        return res.status(404).json({ 
+            message: "Note not found or you are not authorized to delete this note" 
+        });
+    }
+
+    res.json({ message: "Note deleted successfully" });
+});
 
 

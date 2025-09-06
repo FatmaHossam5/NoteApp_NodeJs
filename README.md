@@ -63,8 +63,7 @@ A robust RESTful API for personal note-taking with JWT authentication, built wit
    nodeMailerEmail=your-email@gmail.com
    nodeMailerPassword=your-app-password
    
-   # Frontend URL (for CORS)
-   FRONTEND_URL=http://localhost:3000
+   
    ```
 
 4. **Start the server**
@@ -274,11 +273,8 @@ NoteApp_NodeJs/
 3. **Set Environment Variables**
    In your Vercel dashboard, add all the environment variables from your `.env` file.
 
-### Other Deployment Options
 
-- **Railway**: Easy MongoDB integration
-- **Render**: Free tier available
-- **Heroku**: Traditional PaaS option
+
 
 ## 🧪 Testing the API
 
@@ -331,31 +327,3 @@ Common HTTP status codes:
 - `409`: Conflict
 - `429`: Too Many Requests
 - `500`: Internal Server Error
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the ISC License.
-
-## 👨‍💻 Author
-
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-
-## 🙏 Acknowledgments
-
-- Express.js team for the amazing framework
-- MongoDB team for the database
-- All open-source contributors
-
----
-
-**Happy Note Taking! 📝✨**

@@ -28,12 +28,34 @@ export const appRouter = (app) => {
     app.use(express.json({ limit: '10mb' }));
     app.use(express.urlencoded({ extended: false, limit: '10mb' }));
     
-    // CORS configuration
-    app.use(cors({
-        origin: process.env.FRONTEND_URL || '*',
-        credentials: true
-    }));
-    
+  
+ 
+
+// CORS configuration with multiple origins
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://fatmahossam5.github.io',
+    'https://fatmahossam5.github.io/NoteApp_React',
+    process.env.FRONTEND_URL
+].filter(Boolean); // Remove any undefined values
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            console.log('CORS blocked origin:', origin);
+            return callback(new Error('Not allowed by CORS'), false);
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
     const baseUrl = '/api/v1';
     
     // API routes
